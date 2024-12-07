@@ -1,0 +1,117 @@
+#include<iostream>
+using namespace std;
+#define max 10
+struct CongViec{
+	string MaCongViec;
+	float ThoiGianBD;
+	float ThoiGianTH;
+};
+struct NhanVien{
+	string TenNhanVien;
+};
+struct ListCV{
+	CongViec cv[max];
+	int count=0;
+};
+struct ListNV{
+	NhanVien nv[max];
+	int countnv=0;
+};
+ListCV c;
+ListNV L;
+int n=6;
+int dem=0,dempa=0,dd[10],z[10];
+void AddCV(ListCV &c,CongViec &x,string MaCV, float bd, float th){
+	if(c.count==max){
+		cout<<"Danh sach day!";
+	}
+	else{
+		x.MaCongViec=MaCV;
+		x.ThoiGianBD=bd;
+		x.ThoiGianTH=th;
+		c.count++;
+		c.cv[c.count]=x;
+	}
+}
+void AddNV(ListNV &L,NhanVien &v,string TenNhanVien){
+	if(L.countnv==max){
+		cout<<"Danh sach day!";
+	}
+	else{
+		v.TenNhanVien=TenNhanVien;
+		L.countnv++;
+		L.nv[L.countnv]=v;
+	}
+}
+void HienThiDSCV(ListCV c){
+	for(int i=1;i<=6;i++){
+		cout<<c.cv[i].MaCongViec<<"  "<<c.cv[i].ThoiGianBD<<"  "<<c.cv[i].ThoiGianTH<<endl;
+	}
+}
+void HienThiCVThuI(ListCV c,int i){
+	cout<<c.cv[i].MaCongViec<<"  "<<c.cv[i].ThoiGianBD<<"  "<<c.cv[i].ThoiGianTH<<endl;
+
+}
+void DQ(ListCV c,int n){
+	if(n>0){
+		HienThiCVThuI(c,n);
+		return DQ(c,n-1);
+	}
+}
+void ChiaDeTri(ListCV c, int l, int r, float tg, int &dem){
+	if(l==r){
+		if(c.cv[l].ThoiGianTH<=tg){
+			dem++;
+			HienThiCVThuI(c,l);
+		}
+	}
+	else{
+		int m=(l+r)/2;
+		ChiaDeTri(c,l,m,tg,dem);
+		ChiaDeTri(c,m+1,r,tg,dem);
+	}
+}
+void Try(ListCV c, int k){
+	for(int i=1;i<=n;i++){
+		if(dd[i]==0){
+			z[k]=i;
+			dd[i]=1;
+			if(k==n){
+				dempa++;
+				cout<<"Phuong an thu "<<dempa<<": "<<endl;
+				for(int j=1;j<=n;j++){
+				int h=z[j];
+				cout<<c.cv[h].MaCongViec<<"  "<<c.cv[h].ThoiGianBD<<"  "<<c.cv[h].ThoiGianTH<<" - "<<L.nv[j].TenNhanVien<<endl;
+			}
+			}
+			else{
+				Try(c,k+1);
+			}
+			dd[i]=0;
+		}
+	}
+}
+int main(){
+	CongViec a;
+	AddCV(c,a,"CV001",8.5,1.5);
+	AddCV(c,a,"CV002",9,0.5);
+	AddCV(c,a,"CV003",7,4);
+	AddCV(c,a,"CV004",14,0.2);
+	AddCV(c,a,"CV005",8.4,0.1);
+	AddCV(c,a,"CV006",15,2);
+	NhanVien v;
+	AddNV(L,v,"Hung");
+	AddNV(L,v,"Hai");
+	AddNV(L,v,"Hoa");
+	AddNV(L,v,"Hieu");
+	AddNV(L,v,"Hang");
+	AddNV(L,v,"Hong");
+	cout<<"Danh sach ban dau: "<<endl;
+	HienThiDSCV(c);
+	cout<<"Danh sach sau de qui: "<<endl;
+	DQ(c,n);
+	cout<<"Danh sach cong viec co thoi gian < 0.5 gio: "<<endl;
+	ChiaDeTri(c,1,n,0.5,dem);
+	cout<<"Hoan vi cong viec: "<<endl;
+	Try(c,1);
+}
